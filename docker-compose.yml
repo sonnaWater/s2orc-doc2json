@@ -1,5 +1,6 @@
 # 移除了 version 欄位，符合最新 Compose Specification
 services:
+# Java 容器取名叫 grobid
   grobid:
     image: lfoppiano/grobid:0.8.0
     container_name: grobid_server

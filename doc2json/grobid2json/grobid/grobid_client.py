@@ -18,7 +18,8 @@ require something scalable too, which is not implemented for the moment.
 '''
 
 DEFAULT_GROBID_CONFIG = {
-    "grobid_server": "localhost",
+    # [舊版]："grobid_server": "localhost", # <--- 就是這個叛徒導致連線被拒絕
+    "grobid_server": "grobid", # <--- 修改為 Docker Compose 中的服務名稱
     "grobid_port": "8070",
     "batch_size": 1000,
     "sleep_time": 5,

@@ -10,7 +10,9 @@ import json
 INPUT_DIR = Path("/app/data/input_pdfs")
 OUTPUT_DIR = Path("/app/data/output_json")
 TEMP_DIR = Path("/app/temp")
-ERROR_LOG = Path("/app/data/error_log.json")
+# 舊的：ERROR_LOG = Path("/app/data/error_log.json")
+# 請改成下面這行：
+ERROR_LOG = Path("/app/data/output_json/error_log.json")
 
 # 併發數量：建議設定為 (CPU 核心數 * 2)，因為這主要卡在等待 Grobid API 的網路 I/O
 MAX_WORKERS = 8 
@@ -33,7 +35,9 @@ def process_single_pdf(pdf_path: Path):
 
     # 封裝要呼叫的指令
     cmd = [
-        "python", "doc2json/pdf2json/process_pdf.py",
+        # 舊的："python", "doc2json/pdf2json/process_pdf.py",
+        # 請改成 grobid2json：
+        "python", "doc2json/grobid2json/process_pdf.py",
         "-i", str(pdf_path),
         "-t", str(TEMP_DIR),
         "-o", str(OUTPUT_DIR)
