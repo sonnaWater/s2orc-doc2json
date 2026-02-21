@@ -1,0 +1,20 @@
+# 移除了 version 欄位，符合最新 Compose Specification
+services:
+  grobid:
+    image: lfoppiano/grobid:0.8.0
+    container_name: grobid_server
+    ports:
+      - "8070:8070"
+    environment:
+      - JAVA_OPTS=-Xmx4g
+
+  doc2json:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: doc2json_worker
+    depends_on:
+      - grobid
+    volumes:
+      - ./data/input_pdfs:/app/data/input_pdfs
+      - ./data/output_json:/app/data/output_json

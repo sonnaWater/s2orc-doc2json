@@ -1,3 +1,49 @@
+# 🚀 s2orc-doc2json (Enterprise-Grade MLOps Fork)
+
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+> **Note**: This is an enhanced fork of the original [allenai/s2orc-doc2json](https://github.com/allenai/s2orc-doc2json). It has been heavily refactored to introduce **Infrastructure as Code (IaC)**, **Microservices Isolation**, and **Fault-Tolerant Batch Processing**, aiming to process large-scale, unstructured academic/financial PDFs into structured JSONs for LLM RAG and Knowledge Graph pipelines.
+
+## ✨ Key Engineering Enhancements
+
+Unlike the upstream repository which requires complex manual setups for Java, Grobid, and LaTeX dependencies, this fork provides a production-ready, containerized pipeline.
+
+* **🐳 Containerized Infrastructure (Docker & Compose):** Decoupled the heavy Java-based Grobid parsing engine from the Python semantic mapper. Encapsulated all complex OS-level dependencies (TeX Live, Tralics) into a clean, reproducible Docker environment.
+* **⚡ High-Throughput Multiprocessing Pipeline:** Implemented `batch_process.py`, a robust Python multi-threading/multi-processing script designed to chew through tens of thousands of PDFs concurrently, maximizing CPU and I/O utilization.
+* **🛡️ Fault Tolerance & OOM Protection:** Real-world PDFs are messy. The batch pipeline features `subprocess` memory isolation to prevent memory leaks from crashing the main worker, strict **timeout mechanisms** to avoid deadlocks on corrupted files, and an automated error-logging system for retry mechanics (Idempotent processing).
+
+## 🏗️ System Architecture
+
+```text
+[ Raw PDF/TeX Files ] 
+        │
+        ▼ (Batch Polling)
++-----------------------------------+
+|  Python Worker Container          | <--- (Handles I/O, Error Catching, Multiprocessing)
+|  - doc2json parser                |
+|  - batch_process.py               |
++-----------------------------------+
+        │ HTTP POST /api/processFulltextDocument
+        ▼
++-----------------------------------+
+|  Grobid Java Server Container     | <--- (Handles Heavy Visual/Layout ML Inference)
+|  (Port: 8070, RAM: 4GB+)          |
++-----------------------------------+
+        │ Returns TEI XML
+        ▼
+[ Structured S2ORC JSON Output ]
+
+
+---
+
+bellowing is the original README from AllenAI, which contains detailed instructions on how to set up and use the original codebase. The above enhancements are built on top of this original codebase, so understanding the original setup is crucial for using and further developing this fork.
+
+
+# 🛠️ Setup Instructions from AllenAI
+
+
 # Convert scientific papers to S2ORC JSON
 
 This project is a part of [S2ORC](https://github.com/allenai/s2orc). For S2ORC, we convert PDFs to JSON using Grobid and a custom TEI.XML to JSON parser. That TEI.XML to JSON parser (`grobid2json`) is made available here. We additionally process LaTeX dumps from arXiv. That parser (`tex2json`) is also made available here.
